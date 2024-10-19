@@ -1,5 +1,5 @@
 
-import InterestTable from "#/InterestTable"
+import CashFlow from "#/CashFlow"
 
 export default function IndexPage() {
   return (
@@ -15,7 +15,7 @@ export default function IndexPage() {
         </p>
       </div>
       <div className="flex gap-4">
-        <InterestTable i={0.10} />
+        <CashFlow />
       </div>
     </section>
   )
