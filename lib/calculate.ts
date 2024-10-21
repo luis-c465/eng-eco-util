@@ -103,7 +103,7 @@ export function calculateInterest(
   const high = calc(i_array[i_array.length - 1]);
   const ascending = low <= high;
 
-  function recursive(low_i: number, high_i: number) {
+  function recursive(low_i: number, high_i: number): number {
     if (high_i < low_i) return -1;
 
     console.log(low_i, high_i)
@@ -156,7 +156,7 @@ export function calculateInterestFull(
   const high = calc(60 / 100);
   const ascending = low <= high;
 
-  function recursive(low: number, high: number) {
+  function recursive(low: number, high: number): number {
     if (high < low) return -1;
 
     console.log(low, high)

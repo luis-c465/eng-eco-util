@@ -1,5 +1,6 @@
 "use client"
 
+import { fullModeAtom, store } from "#/interest/atom";
 import InterestFinderSheet from "#/interest/FinderSheet";
 import InterestTableRender from "#/interest/TableRender";
 import Page from "#/Page";
@@ -8,13 +9,10 @@ import { Label } from "#/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { calculateValues } from "@/lib/calculate";
 import { N_VALUES } from "@/lib/config";
-import { atom, createStore, useAtom } from "jotai";
+import { useAtom } from "jotai";
 import { debounce, memoize, range, round, throttle } from "lodash-es";
 import { notFound } from "next/navigation";
 import { ChangeEvent, KeyboardEvent, useCallback, useMemo, useState } from "react";
-
-export const store = createStore()
-export const fullModeAtom = atom(false)
 
 const calculate = memoize(calculateValues, (i, n) => `${i}, ${n}`)
 

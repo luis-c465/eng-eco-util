@@ -1,5 +1,6 @@
 "use client"
 
+import { fullModeAtom, store } from "#/interest/atom";
 import { Button } from "#/ui/button";
 import {
   Form,
@@ -15,7 +16,6 @@ import {
   PopoverTrigger,
 } from "#/ui/popover";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "#/ui/sheet";
-import { fullModeAtom, store } from "@/app/table/[interest]/page";
 import {
   Command,
   CommandEmpty,
