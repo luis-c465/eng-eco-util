@@ -66,7 +66,7 @@ export default function TablePage({ params: { interest } }: { params: { interest
       description="Enter an interest rate in the textbox below to update the table"
     >
       <div className="grid w-full max-w-sm items-center gap-1.5 ">
-        <div className="flex gap-10 items-center">
+        <div className="flex gap-10 items-center relative">
           <div className="flex gap-2 items-center">
             <Label htmlFor="interest">Interest</Label>
             <div className="flex gap-1 items-center">

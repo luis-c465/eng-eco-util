@@ -21,7 +21,7 @@ export default function ScaleSetter() {
       <SingleScaleSetter
         atom={scaleYAtom}
         label="Y Scale"
-        min={1}
+        min={0.01}
         max={80}
       />
     </div>
@@ -52,7 +52,7 @@ function SingleScaleSetter({ atom, label, max, min }: ScaleSetterProps) {
           defaultValue={[scale]}
           max={max}
           min={min}
-          step={1}
+          step={0.1}
           onValueChange={([v]) => setScale(v)}
         />
 

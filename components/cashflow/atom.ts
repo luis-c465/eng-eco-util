@@ -7,13 +7,13 @@ import { atom, createStore, PrimitiveAtom } from "jotai"
 export const store = createStore()
 
 export const valueGroupsAtom = atom<PrimitiveAtom<number[]>[]>([
-  atom([0]),
-  atom([1]),
-  atom([2]),
-  atom([3]),
-  atom([4]),
-  atom([5, 4, -5, -5, -6]),
+  atom([-100]),
+  atom([10]),
+  atom([10]),
+  atom([10]),
+  atom([10]),
+  atom([10, 40]),
 ])
 
-export const scaleXAtom = atom<number>(30)
-export const scaleYAtom = atom<number>(10)
+export const scaleXAtom = atom<number>(50)
+export const scaleYAtom = atom<number>(3)

@@ -22,7 +22,7 @@ type InterestTableProps = {
 
 export default function InterestTableRender({ i, data }: InterestTableProps) {
   return (
-    <Table>
+    <Table className="h-full">
       <TableCaption>{i * 100}%</TableCaption>
       <TableHeader>
         <TableRow>
@@ -59,8 +59,8 @@ function Row(data: InterestTableData & {'highlight': boolean}) {
       <TableCellFormat num={data.FP} title="F/P" n={data.n} />
       <TableCellFormat num={data.PF} title="P/F" n={data.n} />
 
-      <TableCellFormat num={data.AF} title="P/F" n={data.n} />
-      <TableCellFormat num={data.AP} title="P/F" n={data.n} />
+      <TableCellFormat num={data.AF} title="A/F" n={data.n} />
+      <TableCellFormat num={data.AP} title="A/P" n={data.n} />
       <TableCellFormat num={data.FA} title="F/A" n={data.n} />
       <TableCellFormat num={data.PA} title="P/A" n={data.n} />
 
@@ -94,7 +94,10 @@ function TableCellFormat({ num, title, n }: TableCellFormatProps) {
   }, [title])
 
   return (
-    <TableCell onClick={onClick} className="px-0">
+    <TableCell
+      onClick={onClick}
+      className="px-0 dark:hover:bg-slate-800 hover:bg-slate-200 transition-colors duration-300 p-2"
+    >
       {formatNumber(num, percision)}
     </TableCell>
   )

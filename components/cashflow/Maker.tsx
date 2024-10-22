@@ -98,9 +98,12 @@ function ValueEditor({ atom, deleteSelf }: ValueEditorProps) {
 
   return (
     <div className="flex gap-2 justify-between w-full">
-      {amounts.map((atom, i) => (
-        <ValueInput atom={atom} key={`${atom}`} />
-      ))}
+      <div className="flex gap-2 items-start">
+        {amounts.map((atom, i) => (
+          <ValueInput atom={atom} key={`${atom}`} />
+        ))}
+
+      </div>
 
       <div className="self-end ml-5 flex gap-2">
         <Button

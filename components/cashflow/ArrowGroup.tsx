@@ -77,7 +77,7 @@ function Arrow({ x, y, value }: ArrowProps) {
       <text
         x={scaledX + arrowWidth * 2 - 10}
         y={isPositive ? arrowTipY + 10 : arrowTipY + 5}
-        fontSize="16"
+        fontSize="15"
         fill={stroke}
         fontFamily="monospace"
       >
