@@ -46,7 +46,6 @@ export default function TablePage({ params: { interest } }: { params: { interest
     }
 
     const parsed = parseFloat(e.target.value);
-    console.log(e.target.value)
     if (Number.isNaN(parsed)) return;
     if (parsed < 0 || parsed > 100) return false;
 

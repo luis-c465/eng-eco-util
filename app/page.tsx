@@ -1,5 +1,4 @@
 
-import CashFlow from "#/CashFlow"
 
 export default function IndexPage() {
   return (
@@ -15,7 +14,6 @@ export default function IndexPage() {
         </p>
       </div>
       <div className="flex gap-4">
-        <CashFlow />
       </div>
     </section>
   )

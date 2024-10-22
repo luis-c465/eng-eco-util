@@ -53,7 +53,7 @@ export default function InterestTableRender({ i, data }: InterestTableProps) {
 
 function Row(data: InterestTableData & {'highlight': boolean}) {
   return (
-    <TableRow className={cn(data.highlight && 'bg-muted/100')}>
+    <TableRow className={cn(data.highlight && 'bg-muted/50')}>
       <TableCell className="font-medium">{data.n}</TableCell>
 
       <TableCellFormat num={data.FP} title="F/P" n={data.n} />
