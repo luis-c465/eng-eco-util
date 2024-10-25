@@ -38,7 +38,7 @@ export default function InterestTable() {
 
   return (
     <Table className="h-full !overflow-[initial]">
-      <TableCaption>{i * 100}%</TableCaption>
+      <TableCaption>{(i * 100).toFixed(3)}%</TableCaption>
       <TableHeader className="sticky top-[65px]">
         <TableRow className="bg-muted">
           <TableHead className="w-[30px] font-bold">n</TableHead>

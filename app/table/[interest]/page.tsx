@@ -28,10 +28,10 @@ export default function TablePage({
       description="Enter an interest rate in the textbox below to update the table"
     >
       <Provider store={store}>
-        <div className="grid w-full max-w-sm items-center gap-1.5 ">
-          <div className="flex gap-10 items-center relative">
-            <InterestInput defaultInterest={defaultInterest} />
+        <div className="flex w-full items-center justify-between">
+          <InterestInput defaultInterest={defaultInterest} />
 
+          <div className="flex gap-10">
             <FullModeSwitch />
 
             <InterestFinderSheet />
