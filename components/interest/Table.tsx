@@ -1,4 +1,6 @@
 "use client"
+
+import { useCallback, useMemo } from "react"
 import {
   Table,
   TableBody,
@@ -6,26 +8,39 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
-} from "#/ui/table";
-import type { InterestTableData, RatioTypes } from "@/lib/calculate";
-import { RATIO_PERCISION } from "@/lib/config";
-import { cn } from "@/lib/utils";
-import { useCallback, useMemo } from "react";
-import { toast } from "sonner";
+  TableRow,
+} from "#/ui/table"
+import { useAtomValue } from "jotai"
+import { range } from "lodash-es"
+import { toast } from "sonner"
 
+import {
+  calculateValues,
+  type InterestTableData,
+  type RatioTypes,
+} from "@/lib/calculate"
+import { N_VALUES, RATIO_PERCISION } from "@/lib/config"
+import { cn } from "@/lib/utils"
 
-type InterestTableProps = {
-  i: number;
-  data: InterestTableData[]
-}
+import { fullModeAtom, interestAtom, store } from "./atom"
 
-export default function InterestTableRender({ i, data }: InterestTableProps) {
+export default function InterestTable() {
+  const i = useAtomValue(interestAtom, { store })
+  const fullMode = useAtomValue(fullModeAtom, { store })
+
+  const values = useMemo(() => {
+    if (fullMode) {
+      return calculateValues(i, range(1, 500 + 1))
+    } else {
+      return calculateValues(i, N_VALUES)
+    }
+  }, [i, fullMode])
+
   return (
-    <Table className="h-full">
+    <Table className="h-full !overflow-[initial]">
       <TableCaption>{i * 100}%</TableCaption>
-      <TableHeader>
-        <TableRow>
+      <TableHeader className="sticky top-[65px]">
+        <TableRow className="bg-muted">
           <TableHead className="w-[30px] font-bold">n</TableHead>
 
           <TableHead>F/P</TableHead>
@@ -43,17 +58,17 @@ export default function InterestTableRender({ i, data }: InterestTableProps) {
       </TableHeader>
 
       <TableBody>
-        {data.map((d, i) => (
-          <Row {...d} key={i} highlight={i % 2 === 0}/>
+        {values.map((d, i) => (
+          <Row {...d} key={i} highlight={i % 2 === 0} />
         ))}
       </TableBody>
     </Table>
   )
 }
 
-function Row(data: InterestTableData & {'highlight': boolean}) {
+function Row(data: InterestTableData & { highlight: boolean }) {
   return (
-    <TableRow className={cn(data.highlight && 'bg-muted/50')}>
+    <TableRow className={cn(data.highlight && "bg-muted/50")}>
       <TableCell className="font-medium">{data.n}</TableCell>
 
       <TableCellFormat num={data.FP} title="F/P" n={data.n} />
@@ -71,26 +86,24 @@ function Row(data: InterestTableData & {'highlight': boolean}) {
   )
 }
 
-
 type TableCellFormatProps = {
-  num: number,
-  title: string,
+  num: number
+  title: string
   n: number
 }
 function TableCellFormat({ num, title, n }: TableCellFormatProps) {
-
   const onClick = useCallback(async () => {
     await navigator.clipboard.writeText(num.toString())
 
-    toast(
-      `Coppied ${title}, n=${n} to clipboard`,
-      { description: num.toString(), dismissible: true }
-    )
+    toast(`Coppied ${title}, n=${n} to clipboard`, {
+      description: num.toString(),
+      dismissible: true,
+    })
   }, [num, title, n])
 
   const percision = useMemo(() => {
     const mappedTitle = title.replace("/", "") as RatioTypes
-    return RATIO_PERCISION[mappedTitle];
+    return RATIO_PERCISION[mappedTitle]
   }, [title])
 
   return (

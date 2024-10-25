@@ -1,21 +1,40 @@
 "use client"
 
-import { fullModeAtom, store } from "#/interest/atom";
-import { Button } from "#/ui/button";
+import { useCallback } from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { fullModeAtom, store } from "#/interest/atom"
+import { Button } from "#/ui/button"
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
-} from "#/ui/form";
+  FormMessage,
+} from "#/ui/form"
+import { Popover, PopoverContent, PopoverTrigger } from "#/ui/popover"
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "#/ui/popover";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "#/ui/sheet";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "#/ui/sheet"
+import { atom, useAtomValue, useSetAtom } from "jotai"
+import { round } from "lodash-es"
+import { CheckIcon, ChevronsUpDownIcon } from "lucide-react"
+import { useForm, UseFormReturn } from "react-hook-form"
+import { toast } from "sonner"
+import { z } from "zod"
+
+import {
+  calculateInterest,
+  calculateInterestFull,
+  RatioTypes,
+} from "@/lib/calculate"
+import { INTEREST_VALUES, RATIO_PERCISION } from "@/lib/config"
+import { cn } from "@/lib/utils"
 import {
   Command,
   CommandEmpty,
@@ -23,20 +42,8 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
-import { Input } from "@/components/ui/input";
-import { calculateInterest, calculateInterestFull, RatioTypes } from "@/lib/calculate";
-import { INTEREST_VALUES, RATIO_PERCISION } from "@/lib/config";
-import { cn } from "@/lib/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { atom, Provider, useAtomValue, useSetAtom } from "jotai";
-import { round } from "lodash-es";
-import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
-import { useCallback } from "react";
-import { useForm, UseFormReturn } from "react-hook-form";
-import { toast } from "sonner";
-
-import { z } from "zod";
+} from "@/components/ui/command"
+import { Input } from "@/components/ui/input"
 
 const foundInterestAtom = atom(-2)
 
@@ -57,47 +64,43 @@ const INTEREST_TABLE_RATIOS = [
 const formSchema = z.object({
   value: z.coerce.number().min(0),
   ratio_type: z.string().refine((v) => INTEREST_TABLE_RATIOS.includes(v)),
-  n: z.coerce.number().min(0).max(1_000)
+  n: z.coerce.number().min(0).max(1_000),
 })
 
-
 export default function InterestFinderSheet() {
-  const setFoundInterest = useSetAtom(foundInterestAtom, {store});
+  const setFoundInterest = useSetAtom(foundInterestAtom, { store })
 
   function onSheetOpenChange(open: boolean) {
     if (!open) {
-      setFoundInterest(-2);
+      setFoundInterest(-2)
     }
   }
 
   return (
-    <Provider store={store}>
-      <Sheet onOpenChange={onSheetOpenChange}>
-        <SheetTrigger asChild>
-          <Button variant="outline" className="w-[100px]">
-            Find i%
-          </Button>
-        </SheetTrigger>
+    <Sheet onOpenChange={onSheetOpenChange}>
+      <SheetTrigger asChild>
+        <Button variant="outline" className="w-[100px]">
+          Find i%
+        </Button>
+      </SheetTrigger>
 
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>Find Interest Rate</SheetTitle>
-            <SheetDescription>
-              Find the interest rate for a given ratio & value.
-            </SheetDescription>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Find Interest Rate</SheetTitle>
+          <SheetDescription>
+            Find the interest rate for a given ratio & value.
+          </SheetDescription>
 
-            <Content />
-          </SheetHeader>
-        </SheetContent>
-      </Sheet>
-
-    </Provider>
+          <Content />
+        </SheetHeader>
+      </SheetContent>
+    </Sheet>
   )
 }
 
 function Content() {
   const setFoundInterest = useSetAtom(foundInterestAtom, { store })
-  const fullMode = useAtomValue(fullModeAtom, {store})
+  const fullMode = useAtomValue(fullModeAtom, { store })
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -105,10 +108,10 @@ function Content() {
   })
 
   function onSubmit({ value, ratio_type, n }: z.infer<typeof formSchema>) {
-    const ratio_type_mapped = ratio_type.replace("/", "") as RatioTypes;
+    const ratio_type_mapped = ratio_type.replace("/", "") as RatioTypes
     const percision_mapped = RATIO_PERCISION[ratio_type_mapped]
 
-    let found = -1;
+    let found = -1
     if (!fullMode) {
       found = calculateInterest(INTEREST_VALUES, n, value, ratio_type_mapped)
     } else {
@@ -125,7 +128,7 @@ function Content() {
     <div className="flex flex-col gap-5">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="flex gap-2 items-center justify-center">
+          <div className="flex gap-2 justify-between">
             <RatioValueInput form={form} />
 
             <RatioNInput form={form} />
@@ -147,37 +150,30 @@ function ShowFoundInterest() {
   const onClick = useCallback(async () => {
     await navigator.clipboard.writeText(foundInterest.toString())
 
-    toast(
-      `Coppied found interest value to clipboard`,
-      { description: foundInterest.toString(), dismissible: true }
-    )
+    toast(`Coppied found interest value to clipboard`, {
+      description: foundInterest.toString(),
+      dismissible: true,
+    })
   }, [foundInterest])
 
   if (foundInterest === -2) {
-    return null;
+    return null
   }
 
   if (foundInterest === -1) {
-    return (
-      <div className="text-red-500">
-        No interest found
-      </div>
-    )
+    return <div className="text-red-500">No interest found</div>
   }
 
   return (
     <div onClick={onClick}>
       Found Interest:
-      <strong className="ml-1">
-        {foundInterest}%
-      </strong>
+      <strong className="ml-1">{foundInterest}%</strong>
     </div>
   )
 }
 
-
 type FormProps = {
-  form: UseFormReturn<z.infer<typeof formSchema>>;
+  form: UseFormReturn<z.infer<typeof formSchema>>
 }
 
 function RatioValueInput({ form }: FormProps) {
@@ -189,7 +185,13 @@ function RatioValueInput({ form }: FormProps) {
         <FormItem className="flex flex-col h-full">
           <FormLabel>Value</FormLabel>
           <FormControl>
-            <Input type="number" step={0.001} min={0} placeholder="0" {...field} />
+            <Input
+              type="number"
+              step={0.001}
+              min={0}
+              placeholder="0"
+              {...field}
+            />
           </FormControl>
 
           <FormMessage />
@@ -208,7 +210,14 @@ function RatioNInput({ form }: FormProps) {
         <FormItem className="flex flex-col h-full">
           <FormLabel>N</FormLabel>
           <FormControl>
-            <Input type="number" step={1} min={0} max={1_000} placeholder="0" {...field} />
+            <Input
+              type="number"
+              step={1}
+              min={0}
+              max={1_000}
+              placeholder="0"
+              {...field}
+            />
           </FormControl>
 
           <FormMessage />
@@ -239,8 +248,8 @@ function RatioTypeInput({ form }: FormProps) {
                 >
                   {field.value
                     ? INTEREST_TABLE_RATIOS.find(
-                      (language) => language === field.value
-                    )
+                        (language) => language === field.value
+                      )
                     : "Select Ratio"}
                   <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
